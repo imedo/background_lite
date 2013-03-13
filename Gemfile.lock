@@ -22,11 +22,14 @@ GEM
     builder (3.0.4)
     gemmer (0.1.2)
     i18n (0.6.4)
+    json (1.7.7)
     metaclass (0.0.1)
     mocha (0.13.3)
       metaclass (~> 0.0.1)
     multi_json (1.6.1)
     rake (10.0.3)
+    rdoc (4.0.0)
+      json (~> 1.4)
     tzinfo (0.3.37)
 
 PLATFORMS
@@ -38,3 +41,4 @@ DEPENDENCIES
   gemmer
   mocha (~> 0.13.3)
   rake (~> 10.0.3)
+  rdoc

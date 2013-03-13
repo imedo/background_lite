@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/helper')
+require 'helper'
 require 'active_support/version'
 
 if ActiveSupport::VERSION::STRING < "3.0.0"

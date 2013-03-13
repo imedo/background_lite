@@ -1,5 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/helper')
-
+require 'helper'
 
 class BackgroundLiteTest < MiniTest::Unit::TestCase # :nodoc:
   def define_background_class

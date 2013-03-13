@@ -7,5 +7,6 @@ require 'background_lite'
 
 RAILS_ENV = 'test'
 
-require 'minitest/autorun'
+require 'minitest/unit'
+require 'turn/autorun'
 require 'mocha/setup'

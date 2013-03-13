@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.bindir = 'bin'
   s.executables = Dir['bin/*'].collect { |file| File.basename(file) }
   
-  s.add_dependency('active_support', '>=2.3.0')
+  s.add_dependency('activesupport', '>= 2.3.0')
   s.add_development_dependency 'gemmer'
   
   s.require_path = "lib"

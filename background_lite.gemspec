@@ -1,3 +1,5 @@
+require 'date'
+
 Gem::Specification.new do |s| 
   s.platform  =   Gem::Platform::RUBY
   s.name      =   "background_lite"

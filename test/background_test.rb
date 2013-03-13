@@ -1,7 +1,7 @@
-require File.expand_path(File.dirname(__FILE__) + '/abstract_unit')
+require File.expand_path(File.dirname(__FILE__) + '/helper')
 
 
-class BackgroundLiteTest < Test::Unit::TestCase # :nodoc:
+class BackgroundLiteTest < MiniTest::Unit::TestCase # :nodoc:
   def define_background_class
     Object.send :remove_const, :SomeBackgroundClass if Object.const_defined?(:SomeBackgroundClass)
     Object.const_set(:SomeBackgroundClass, Class.new)
@@ -42,7 +42,7 @@ class BackgroundLiteTest < Test::Unit::TestCase # :nodoc:
     assert obj.respond_to?(:add_three_with_background)
     assert obj.respond_to?(:add_three_without_background)
     assert_equal 6, obj.add_three_without_background(1, 2, 3)
-    assert_not_equal 6, obj.add_three_with_background(1, 2, 3)
+    refute_equal 6, obj.add_three_with_background(1, 2, 3)
   end
   
   def test_should_run_code_block_in_background
@@ -78,7 +78,7 @@ class BackgroundLiteTest < Test::Unit::TestCase # :nodoc:
     SomeBackgroundClass.background_method :add_three
     obj = SomeBackgroundClass.new
     obj.add_three(1, 2, 3)
-    assert_not_equal obj, BackgroundLite::TestHandler.object
+    refute_equal obj, BackgroundLite::TestHandler.object
   end
   
   def test_should_use_specified_handler_and_fallback
@@ -95,7 +95,7 @@ class BackgroundLiteTest < Test::Unit::TestCase # :nodoc:
     SomeBackgroundClass.background_method :add_three, :handler => [{:test => { :some_option => 2 }}]
     obj = SomeBackgroundClass.new
     obj.add_three(1, 2, 3)
-    assert_not_nil BackgroundLite::TestHandler.options
+    refute_nil BackgroundLite::TestHandler.options
     assert_equal 2, BackgroundLite::TestHandler.options[:some_option]
   end
   

@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/abstract_unit')
+require File.expand_path(File.dirname(__FILE__) + '/helper')
 require 'active_support/version'
 
 if ActiveSupport::VERSION::STRING < "3.0.0"
@@ -18,7 +18,7 @@ else
   end
 end
 
-class ActiveRecordTest < Test::Unit::TestCase # :nodoc:
+class ActiveRecordTest < MiniTest::Unit::TestCase # :nodoc:
   def setup
     BackgroundLite::Config.default_handler = [:test, :forget]
     BackgroundLite::Config.default_error_reporter = :test

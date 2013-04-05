@@ -24,6 +24,7 @@ GEM
     gemmer (0.1.2)
     i18n (0.6.4)
     json (1.7.7)
+    marshal-structure (1.1.1)
     metaclass (0.0.1)
     minitest (4.6.2)
     mocha (0.13.3)
@@ -43,6 +44,7 @@ DEPENDENCIES
   activerecord (~> 3.2.12)
   background_lite!
   gemmer
+  marshal-structure
   minitest (~> 4.5)
   mocha (~> 0.13.3)
   rake (~> 10.0.3)

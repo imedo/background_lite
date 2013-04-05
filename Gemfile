@@ -6,5 +6,6 @@ gem 'mocha',        '~> 0.13.3', :require => false
 gem 'rdoc'
 gem 'minitest',     '~> 4.5'
 gem 'turn',         '~> 0.9.6',  :require => false
+gem 'marshal-structure'
 
 gemspec

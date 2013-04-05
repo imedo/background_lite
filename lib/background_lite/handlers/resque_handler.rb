@@ -1,9 +1,29 @@
 module BackgroundLite
   # This background handler sends the method as well as the arguments through
   # Resque to the background process.
+
+  class UnableToDecodeError < StandardError
+    def initialize(error_message, marshalled_obj = nil)
+      error_message << build_message_for_object(marshalled_obj) if marshalled_obj
+      super(error_message)
+    end
+
+    private
+
+    def build_message_for_object(marshalled_object)
+      require 'marshal/structure'
+      structure = Marshal::Structure.new(marshalled_object)
+      structure.construct.inspect
+    rescue LoadError
+      "(marshal-structure could not be loaded; representation cannot be parsed #{marshalled_object.inspect})"
+    rescue ArgumentError
+      "(marshal-structure could not create a representation from this object: #{marshalled_object.inspect})"
+    end
+  end
+
   class ResqueHandler
     @queue = :background
-   
+
     class << self
       attr_accessor :queue
     end
@@ -14,22 +34,30 @@ module BackgroundLite
       require 'resque'
       Resque.enqueue(self, Base64.encode64(Marshal.dump([object, method, args, options[:transaction_id]])))
     end
-    
+
     # Decodes a marshalled message which was previously sent over
     # Resque. Returns an array containing the object, the method name
     # as a string, and the method arguments.
     def self.decode(message)
-      begin
-        object, method, args, transaction_id = Marshal.load(Base64.decode64(message))
-      rescue ArgumentError => e
-        # Marshal.load does not trigger const_missing, so we have to do this
-        # ourselves.
-        e.message.split(' ').last.constantize
-        retry
-      end
+      object, method, args, transaction_id = marshal_safe_load(Base64.decode64(message))
       [object, method, args, transaction_id]
     end
-    
+
+    def self.marshal_safe_load(message)
+      Marshal.load(message)
+    rescue ArgumentError => error
+      # Marshal.load does not trigger const_missing, so we have to do this
+      # ourselves.
+      probable_constant = error.message.split(' ').last
+      begin
+        probable_constant.constantize
+      rescue NameError
+        puts probable_constant.inspect
+        raise UnableToDecodeError.new('Unable to decode message', message)
+      end
+      retry
+    end
+
     # Executes a marshalled message which was previously sent over
     # Resque, in the context of the object, with all the arguments
     # passed.
@@ -43,8 +71,9 @@ module BackgroundLite
           logger.debug "--- in object: #{object.class.name}, #{object.id}"
           logger.debug "--- Transaction ID: #{transaction_id}"
         end
-        object.send(method, *args)
+        result = object.send(method, *args)
         logger.debug "--- it happened!" if logger.debug?
+        result
       rescue Exception => e
         logger.fatal e.message
         logger.fatal e.backtrace
@@ -52,5 +81,6 @@ module BackgroundLite
         raise e
       end
     end
+
   end
 end
